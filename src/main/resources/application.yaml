@@ -28,8 +28,10 @@ spring:
 
 #miniauthkeykjnzdfvhjkulseru8osdgrfhnj34teq809qu2382hasfgdroyh8q3t489yq3t4haegfrs2
 jwt:
-  secret: "bWluaWF1dGhrZXlram56ZGZ2aGprdWxzZXJ1OG9zZGdyZmhuajM0dGVxODA5cXUyMzgyaGFzZmdkcm95aDhxM3Q0ODl5cTN0NGhhZWdmcnMy" #'${JWT}
+  secret: ${JWT}
+#  secret: "bWluaWF1dGhrZXlram56ZGZ2aGprdWxzZXJ1OG9zZGdyZmhuajM0dGVxODA5cXUyMzgyaGFzZmdkcm95aDhxM3Q0ODl5cTN0NGhhZWdmcnMy" #'${JWT}
   expiration: 3600000  # 1 час в миллисекундах
+  refresh-expiration-ms: 604800000  # 7 дней в миллисекундах
 
 server:
   port: 8080

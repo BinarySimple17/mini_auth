@@ -10,6 +10,7 @@ import ru.binarysimple.auth.dto.AuthResponse;
 import ru.binarysimple.auth.dto.LoginRequest;
 import ru.binarysimple.auth.dto.RegisterRequest;
 import ru.binarysimple.auth.dto.UserInfo;
+import ru.binarysimple.auth.model.RefreshToken;
 import ru.binarysimple.auth.model.User;
 import ru.binarysimple.auth.repository.UserRepository;
 import ru.binarysimple.auth.security.JwtTokenProvider;
@@ -25,6 +26,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     public AuthResponse login(LoginRequest request) {
         // Аутентификация
@@ -34,14 +36,18 @@ public class AuthServiceImpl implements AuthService {
 
         // Генерация токена
         String token = jwtTokenProvider.generateToken(auth);
-
-        // Получение информации о пользователе
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
+
+//        // Получение информации о пользователе
+//        User user = userRepository.findByUsername(request.getUsername())
+//                .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Создание ответа
         AuthResponse response = new AuthResponse();
         response.setAccessToken(token);
+        response.setRefreshToken(refreshToken.getToken());
         response.setUserInfo(mapToUserInfo(user));
 
         return response;
@@ -77,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
         return mapToUserInfo(user);
     }
 
-    private UserInfo mapToUserInfo(User user) {
+    public UserInfo mapToUserInfo(User user) {
         UserInfo userInfo = new UserInfo();
         userInfo.setId(user.getId());
         userInfo.setUsername(user.getUsername());

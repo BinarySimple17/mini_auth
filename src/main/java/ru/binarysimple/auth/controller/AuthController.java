@@ -1,12 +1,16 @@
 package ru.binarysimple.auth.controller;
 
 import ru.binarysimple.auth.dto.*;
+import ru.binarysimple.auth.exception.TokenRefreshException;
+import ru.binarysimple.auth.model.User;
 import ru.binarysimple.auth.service.AuthServiceImpl;
+import ru.binarysimple.auth.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.binarysimple.auth.service.RefreshTokenService;
 
 @RestController
 @RequestMapping("/auth")
@@ -14,6 +18,8 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthServiceImpl authService;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
@@ -50,5 +56,25 @@ public class AuthController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refreshToken(@RequestBody TokenRefreshRequest request) {
+        String requestRefreshToken = request.getRefreshToken();
+
+        return refreshTokenService.findByToken(requestRefreshToken)
+                .map(refreshTokenService::verifyExpiration)
+                .map(refreshToken -> {
+                    User user = refreshToken.getUser();
+                    String token = jwtTokenProvider.generateTokenFromUsername(user.getUsername());
+
+                    AuthResponse authResponse = new AuthResponse();
+                    authResponse.setAccessToken(token);
+                    authResponse.setRefreshToken(refreshToken.getToken());
+                    authResponse.setUserInfo(authService.mapToUserInfo(user));
+
+                    return ResponseEntity.ok(authResponse);
+                })
+                .orElseThrow(() -> new TokenRefreshException(requestRefreshToken, "Refresh token not found"));
     }
 }
