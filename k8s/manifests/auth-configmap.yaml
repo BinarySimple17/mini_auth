@@ -1,0 +1,33 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: auth-service-config
+  labels:
+    app: auth-service
+data:
+  application-kubernetes.yaml: |
+    spring:
+      datasource:
+        url: ${DATASOURCE_URL}
+        username: ${DATASOURCE_USERNAME}
+        password: ${DATASOURCE_PASSWORD}
+        driver-class-name: org.postgresql.Driver
+        hikari:
+          maximum-pool-size: 10
+          minimum-idle: 2
+    
+      liquibase:
+        enabled: true
+    
+      springdoc:
+        api-docs:
+          path: /v3/api-docs
+        swagger-ui:
+          path: /swagger-ui.html
+        info:
+          title: Auth Service API
+          version: 1.0.0
+          description: REST API for managing authentication and authorization.
+          contact:
+            name: Support Team
+            email: support@example.com

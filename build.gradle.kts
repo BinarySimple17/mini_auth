@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "ru.binarysimple"
-version = "0.0.1-SNAPSHOT"
+version = "0.0.2"
 description = "Auth Service"
 
 java {
@@ -48,6 +48,12 @@ dependencies {
     implementation(libs.jsonwebtoken.api)
     runtimeOnly(libs.jsonwebtoken.impl)
     runtimeOnly(libs.jsonwebtoken.jackson)
+}
+
+tasks.register("printVersion") {
+    doLast {
+        println(project.version)
+    }
 }
 
 tasks.withType<Test> {
