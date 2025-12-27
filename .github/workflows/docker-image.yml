@@ -42,18 +42,6 @@ jobs:
           
           echo "Project version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-#    - name: Get version using custom Gradle task
-#      id: gradle_version
-#      run: |
-#        VERSION=$(./gradlew printVersion -q)
-#
-#        if [ -z "$VERSION" ]; then
-#          echo "Error: Could not get version from Gradle"
-#          exit 1
-#        fi
-#
-#        echo "Project version: $VERSION"
-#        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
     
     - name: Build the Docker image
       run: |
