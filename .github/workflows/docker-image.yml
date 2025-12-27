@@ -1,0 +1,36 @@
+name: Docker Image CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Get version using custom Gradle task
+      id: gradle_version
+      run: |
+        # Выполняем задачу printVersion и сохраняем результат
+        VERSION=$(./gradlew printVersion -q)
+        
+        # Проверяем, что версия получена
+        if [ -z "$VERSION" ]; then
+          echo "Error: Could not get version from Gradle"
+          exit 1
+        fi
+        
+        echo "Project version: $VERSION"
+        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+    
+    - name: Build the Docker image
+      run: |
+        echo "Building Docker image with version: ${{ steps.gradle_version.outputs.VERSION }}"
+        docker build . --file Dockerfile --tag binarysimple/simple-auth-service:${{ steps.gradle_version.outputs.VERSION }}
