@@ -3,9 +3,9 @@ spring:
     name: auth
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/${DB_NAME:auth_db}
-    username: ${DB_USERNAME:auth_user}
-    password: ${DB_PASSWORD:password}
+    url: jdbc:postgresql://localhost:5432/${DB_NAME:test_db}
+    username: ${DB_USERNAME:test_user}
+    password: ${DB_PASSWORD:test_password}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 20
@@ -26,16 +26,11 @@ spring:
     change-log: classpath:db/changelog/db.changelog-master.yaml
     enabled: true
 
-#miniauthkeykjnzdfvhjkulseru8osdgrfhnj34teq809qu2382hasfgdroyh8q3t489yq3t4haegfrs2
+
 jwt:
   secret: ${JWT}
-#  secret: "bWluaWF1dGhrZXlram56ZGZ2aGprdWxzZXJ1OG9zZGdyZmhuajM0dGVxODA5cXUyMzgyaGFzZmdkcm95aDhxM3Q0ODl5cTN0NGhhZWdmcnMy" #'${JWT}
-  expiration: 3600000  # 1 час в миллисекундах
-  refresh-expiration-ms: 604800000  # 7 дней в миллисекундах
-
-#app:
-#  jwt:
-#    refresh-expiration-ms: 604800000  # 7 дней в миллисекундах
+  expiration: 3600000  # 1 час
+  refresh-expiration-ms: 604800000  # 7 дней
 
 server:
   port: 8080
