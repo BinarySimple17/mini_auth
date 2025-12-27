@@ -1,0 +1,56 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1766849051104-1
+      author: Professional (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - createTable:
+            columns:
+              - column:
+                  autoIncrement: true
+                  constraints:
+                    nullable: false
+                    primaryKey: true
+                    primaryKeyName: pk_refresh_token
+                  name: id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: token
+                  type: VARCHAR(255)
+              - column:
+                  name: user_id
+                  type: BIGINT
+              - column:
+                  constraints:
+                    nullable: false
+                  name: expiry_date
+                  type: timestamp with time zone
+              - column:
+                  constraints:
+                    nullable: false
+                  name: revoked
+                  type: BOOLEAN
+            tableName: refresh_token
+  - changeSet:
+      id: 1766849051104-2
+      author: Professional (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addUniqueConstraint:
+            columnNames: token
+            constraintName: UC_REFRESH_TOKEN_TOKEN
+            tableName: refresh_token
+  - changeSet:
+      id: 1766849051104-3
+      author: Professional (generated)
+      objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
+      changes:
+        - addForeignKeyConstraint:
+            baseColumnNames: user_id
+            baseTableName: refresh_token
+            constraintName: FK_REFRESH_TOKEN_ON_USER
+            referencedColumnNames: id
+            referencedTableName: users
+

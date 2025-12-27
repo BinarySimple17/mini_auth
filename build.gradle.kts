@@ -2,8 +2,6 @@ plugins {
 	java
     alias(libs.plugins.spring.boot)
     alias(libs.plugins.dependency.management)
-//	id("org.springframework.boot") version "3.5.9"
-//	id("io.spring.dependency-management") version "1.1.7"
 }
 
 group = "ru.binarysimple"
@@ -50,26 +48,7 @@ dependencies {
     implementation(libs.jsonwebtoken.api)
     runtimeOnly(libs.jsonwebtoken.impl)
     runtimeOnly(libs.jsonwebtoken.jackson)
-
-//    implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-//    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
-//    runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
-//	implementation("org.springframework.boot:spring-boot-starter-actuator")
-//	implementation("org.springframework.boot:spring-boot-starter-webflux")
-//	implementation("org.springframework.boot:spring-boot-starter-web")
-//	implementation("org.springframework.cloud:spring-cloud-starter-gateway")
-//	compileOnly("org.projectlombok:lombok")
-//	annotationProcessor("org.projectlombok:lombok")
-//	testImplementation("org.springframework.boot:spring-boot-starter-test")
-//	testImplementation("io.projectreactor:reactor-test")
-//	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
-
-//dependencyManagement {
-//	imports {
-//		mavenBom("org.springframework.cloud:spring-cloud-dependencies:${property("springCloudVersion")}")
-//	}
-//}
 
 tasks.withType<Test> {
 	useJUnitPlatform()

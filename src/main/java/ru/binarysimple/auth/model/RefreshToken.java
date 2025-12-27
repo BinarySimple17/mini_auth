@@ -1,9 +1,7 @@
 package ru.binarysimple.auth.model;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.time.Instant;
 
@@ -12,10 +10,13 @@ import java.time.Instant;
 @Builder
 @Entity
 @Table(name = "refresh_token")
+@NoArgsConstructor
+@AllArgsConstructor
 public class RefreshToken {
 
     @Id
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Long id;
 
 
