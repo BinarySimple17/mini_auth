@@ -1,0 +1,66 @@
+spring:
+  application:
+    name: auth
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/${DB_NAME:auth_db}
+    username: ${DB_USERNAME:auth_user}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob:
+            non_contextual_creation: true
+    show-sql: false
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+
+#miniauthkeykjnzdfvhjkulseru8osdgrfhnj34teq809qu2382hasfgdroyh8q3t489yq3t4haegfrs2
+jwt:
+  secret: "bWluaWF1dGhrZXlram56ZGZ2aGprdWxzZXJ1OG9zZGdyZmhuajM0dGVxODA5cXUyMzgyaGFzZmdkcm95aDhxM3Q0ODl5cTN0NGhhZWdmcnMy" #'${JWT}
+  expiration: 3600000  # 1 час в миллисекундах
+
+server:
+  port: 8080
+
+logging:
+  level:
+    ru.binarysimple: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.orm.jdbc.bind: TRACE
+    org.springframework.web: DEBUG
+    org.springdoc: DEBUG
+    io.swagger: DEBUG
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info, prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+    distribution:
+      percentiles-histogram:
+        "[http.server.requests]": true
+
+info:
+  app:
+    name: "Auth Service"
