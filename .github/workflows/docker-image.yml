@@ -18,10 +18,8 @@ jobs:
     - name: Get version using custom Gradle task
       id: gradle_version
       run: |
-        # Выполняем задачу printVersion и сохраняем результат
         VERSION=$(./gradlew printVersion -q)
         
-        # Проверяем, что версия получена
         if [ -z "$VERSION" ]; then
           echo "Error: Could not get version from Gradle"
           exit 1
