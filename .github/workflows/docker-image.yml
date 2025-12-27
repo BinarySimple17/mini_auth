@@ -29,22 +29,15 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
 
-    - name: Get version from Gradle task
+    - name: Get version from Gradle
       id: gradle_version
       run: |
-          # printVersion
-          # Получаем версию проекта из Gradle, игнорируя все сообщения о загрузке
-          VERSION=$(./gradlew printVersion -q --no-scan --console=plain 2>&1 | tail -n 1 | tr -d '[:space:]')
+          # Простое получение версии проекта
+          VERSION=$(./gradlew properties -q | grep "version:" | cut -d ':' -f 2 | xargs)
           
           if [ -z "$VERSION" ]; then
             echo "Error: Could not get version from Gradle"
             exit 1
-          fi
-          
-          # Убедимся, что версия соответствует ожидаемому формату (например, 0.0.2)
-          if [[ ! "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]]; then
-            # Если версия не в формате x.x.x, попробуем извлечь ее
-            VERSION=$(echo "$VERSION" | grep -o "[0-9]\+\.[0-9]\+\.[0-9]\+" | head -n 1)
           fi
           
           echo "✅ Project version: $VERSION"
