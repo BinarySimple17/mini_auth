@@ -42,7 +42,11 @@ jobs:
           
           echo "Project version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-    
+
+  build-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+
     - name: Build the Docker image
       run: |
         echo "Building Docker image with version: ${{ steps.gradle_version.outputs.VERSION }}"
@@ -54,6 +58,9 @@ jobs:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
 
+  push-docker-image:
+    runs-on: ubuntu-latest
+    steps:
     - name: Push to Docker Hub
       run: |
         docker push binarysimple/simple-auth-service:${{ steps.gradle_version.outputs.VERSION }}
