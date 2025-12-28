@@ -13,25 +13,25 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-    - name: Setup Gradle
-      uses: gradle/actions/setup-gradle@v3
-      with:
-        cache-read-only: false
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          cache-read-only: false
 
-    - name: Make gradlew executable
-      run: chmod +x ./gradlew
+      - name: Make gradlew executable
+        run: chmod +x ./gradlew
 
-    - name: Set up JDK
-      uses: actions/setup-java@v4
-      with:
-        java-version: '17'
-        distribution: 'temurin'
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-    - name: Get version from Gradle
-      id: gradle_version
-      run: |
+      - name: Get version from Gradle
+        id: gradle_version
+        run: |
           # Простое получение версии проекта
           VERSION=$(./gradlew properties -q | grep "version:" | cut -d ':' -f 2 | xargs)
           
@@ -42,30 +42,25 @@ jobs:
           
           echo "Project version: $VERSION"
           echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-#    - name: Get version using custom Gradle task
-#      id: gradle_version
-#      run: |
-#        VERSION=$(./gradlew printVersion -q)
-#
-#        if [ -z "$VERSION" ]; then
-#          echo "Error: Could not get version from Gradle"
-#          exit 1
-#        fi
-#
-#        echo "Project version: $VERSION"
-#        echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
-    
-    - name: Build the Docker image
-      run: |
-        echo "Building Docker image with version: ${{ steps.gradle_version.outputs.VERSION }}"
-        docker build . --file Dockerfile --tag binarysimple/simple-auth-service:${{ steps.gradle_version.outputs.VERSION }}
 
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v3
-      with:
-        username: ${{ secrets.DOCKERHUB_USERNAME }}
-        password: ${{ secrets.DOCKERHUB_TOKEN }}
+  build-docker-image:
+    runs-on: ubuntu-latest
+    steps:
 
-    - name: Push to Docker Hub
-      run: |
-        docker push binarysimple/simple-auth-service:${{ steps.gradle_version.outputs.VERSION }}
+      - name: Build the Docker image
+        run: |
+          echo "Building Docker image with version: ${{ steps.gradle_version.outputs.VERSION }}"
+          docker build . --file Dockerfile --tag binarysimple/simple-auth-service:${{ steps.gradle_version.outputs.VERSION }}
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+  push-docker-image:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Push to Docker Hub
+        run: |
+          docker push binarysimple/simple-auth-service:${{ steps.gradle_version.outputs.VERSION }}
