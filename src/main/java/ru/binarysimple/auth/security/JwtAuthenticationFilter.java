@@ -30,10 +30,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
+        logger.debug("Processing authentication for URI: {}", request.getRequestURI());
         try {
             String jwt = getJwtFromRequest(request);
 
             if (StringUtils.hasText(jwt) && tokenProvider.validateToken(jwt)) {
+                logger.info("JWT token validated successfully for user");
                 String username = tokenProvider.getUsernameFromToken(jwt);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -59,4 +61,5 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     }
 
     private static final Logger logger = LoggerFactory.getLogger(JwtAuthenticationFilter.class);
+
 }

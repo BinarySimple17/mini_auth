@@ -1,5 +1,8 @@
 package ru.binarysimple.auth.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,6 +25,8 @@ import java.util.Set;
 @Service
 public class AuthServiceImpl implements AuthService {
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthServiceImpl.class);
+
     private final AuthenticationManager authenticationManager;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
@@ -29,6 +34,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenService refreshTokenService;
 
     public AuthResponse login(LoginRequest request) {
+        logger.info("Login attempt for user: {}", request.getUsername());
         // Аутентификация
         Authentication auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
@@ -66,6 +72,7 @@ public class AuthServiceImpl implements AuthService {
         user.setRoles(new HashSet<>(Set.of("USER")));
 
         userRepository.save(user);
+        logger.info("User registered successfully: {}", request.getUsername());
 
         // Автоматический логин после регистрации
         LoginRequest loginRequest = new LoginRequest(request.getUsername(), request.getPassword());
@@ -73,7 +80,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     public Boolean validateToken(String token) {
-        return jwtTokenProvider.validateToken(token);
+        boolean isValid = jwtTokenProvider.validateToken(token);
+        if (isValid) {
+            logger.debug("Token validation successful");
+        } else {
+            logger.debug("Token validation failed");
+        }
+        return isValid;
     }
 
     public UserInfo getUserInfo(String token) {
