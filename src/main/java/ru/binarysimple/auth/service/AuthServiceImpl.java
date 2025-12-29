@@ -41,10 +41,12 @@ public class AuthServiceImpl implements AuthService {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
 
+//        SecurityContextHolder.getContext().setAuthentication(auth);
+
         // Генерация токена
-        String token = jwtTokenProvider.generateToken(auth);
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
+        String token = jwtTokenProvider.generateToken(user);
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
 
         // Создание ответа
