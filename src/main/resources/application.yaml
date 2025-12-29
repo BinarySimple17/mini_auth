@@ -35,6 +35,10 @@ jwt:
 server:
   port: 8080
 
+endpoints:
+  users-service: http://localhost:8100
+  api-gateway: http://localhost:8090
+
 logging:
   level:
     ru.binarysimple: INFO

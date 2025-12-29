@@ -1,5 +1,8 @@
 package ru.binarysimple.auth.security;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -14,6 +17,8 @@ import java.util.Date;
 @Component
 public class JwtTokenProvider {
 
+    private static final Logger logger = LoggerFactory.getLogger(JwtTokenProvider.class);
+
     private final SecretKey secretKey;
     private final int jwtExpiration;
 
@@ -26,6 +31,7 @@ public class JwtTokenProvider {
 
 
     public String generateToken(Authentication authentication) {
+        logger.debug("Generating JWT token for user: {}", authentication.getName());
         String username = authentication.getName();
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + jwtExpiration);
@@ -51,6 +57,7 @@ public class JwtTokenProvider {
     }
 
     public String getUsernameFromToken(String token) {
+        logger.debug("Extracting username from JWT token: {}", token);
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(secretKey)
                 .build()
@@ -60,6 +67,7 @@ public class JwtTokenProvider {
     }
 
     public boolean validateToken(String token) {
+        logger.debug("Validating JWT token: {}", token);
         try {
             Jwts.parserBuilder()
                     .setSigningKey(secretKey)

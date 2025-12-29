@@ -1,5 +1,8 @@
 package ru.binarysimple.auth.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -18,6 +21,7 @@ import java.util.UUID;
 @Transactional
 public class RefreshTokenServiceImpl implements RefreshTokenService {
 
+    private static final Logger logger = LoggerFactory.getLogger(RefreshTokenServiceImpl.class);
 
     private final RefreshTokenRepository refreshTokenRepository;
     @Value("${jwt.refresh-expiration-ms}")
