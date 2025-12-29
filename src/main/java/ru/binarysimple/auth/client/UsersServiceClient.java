@@ -25,6 +25,9 @@ public class UsersServiceClient {
     }
 
     public CreateUserExternalDto createUser(CreateUserExternalDto user) {
+        
+        logger.debug("UsersServiceClient createUser: {}", user);
+
         return restClient.post()
                 .uri("/user")
                 .body(user)
