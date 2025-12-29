@@ -2,6 +2,7 @@ package ru.binarysimple.auth.dto;
 
 import lombok.Getter;
 import lombok.Setter;
+import ru.binarysimple.auth.model.Roles;
 
 import java.util.Set;
 
@@ -13,5 +14,6 @@ public class UserInfo {
     //    private String email;
 //    private String firstName;
 //    private String lastName;
-    private Set<String> roles;
+    private Set<Roles> roles;
+//    private Set<String> roles;
 }

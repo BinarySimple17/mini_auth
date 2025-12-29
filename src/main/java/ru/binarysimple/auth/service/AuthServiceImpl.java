@@ -1,19 +1,18 @@
 package ru.binarysimple.auth.service;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.binarysimple.auth.dto.AuthResponse;
-import ru.binarysimple.auth.dto.LoginRequest;
-import ru.binarysimple.auth.dto.RegisterRequest;
-import ru.binarysimple.auth.dto.UserInfo;
+import ru.binarysimple.auth.client.UsersServiceClient;
+import ru.binarysimple.auth.dto.*;
+import ru.binarysimple.auth.mapper.UserMapper;
 import ru.binarysimple.auth.model.RefreshToken;
+import ru.binarysimple.auth.model.Roles;
 import ru.binarysimple.auth.model.User;
 import ru.binarysimple.auth.repository.UserRepository;
 import ru.binarysimple.auth.security.JwtTokenProvider;
@@ -32,6 +31,8 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
+    private final UsersServiceClient usersServiceClient;
+    private final UserMapper mapper;
 
     public AuthResponse login(LoginRequest request) {
         logger.info("Login attempt for user: {}", request.getUsername());
@@ -45,10 +46,6 @@ public class AuthServiceImpl implements AuthService {
         User user = userRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
-
-//        // Получение информации о пользователе
-//        User user = userRepository.findByUsername(request.getUsername())
-//                .orElseThrow(() -> new RuntimeException("User not found"));
 
         // Создание ответа
         AuthResponse response = new AuthResponse();
@@ -69,10 +66,20 @@ public class AuthServiceImpl implements AuthService {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setRoles(new HashSet<>(Set.of("USER")));
+        user.setRoles(new HashSet<>(Set.of(Roles.USER)));
 
         userRepository.save(user);
         logger.info("User registered successfully: {}", request.getUsername());
+
+        CreateUserExternalDto userExternalDto = mapper.toCreateUserExternalDto(request);
+
+        try {
+            usersServiceClient.createUser(userExternalDto);
+        } catch (Exception e) {
+            logger.error("Error creating user in external service: {}", e.getMessage());
+            userRepository.delete(user);
+            throw new RuntimeException("Error creating user in external service");
+        }
 
         // Автоматический логин после регистрации
         LoginRequest loginRequest = new LoginRequest(request.getUsername(), request.getPassword());

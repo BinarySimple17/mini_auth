@@ -1,5 +1,10 @@
 package ru.binarysimple.auth.model;
 
+import lombok.Getter;
+import lombok.ToString;
+
+@ToString
+@Getter
 public enum Roles {
     USER("user"),
     MANAGER("manager"),
@@ -10,9 +15,5 @@ public enum Roles {
 
     Roles(String role) {
         this.role = role;
-    }
-
-    public String getRole() {
-        return role;
     }
 }

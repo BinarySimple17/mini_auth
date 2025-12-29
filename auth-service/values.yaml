@@ -175,3 +175,7 @@ postgresql:
       size: 2Gi
       storageClass: "standard"
   architecture: "standalone"
+
+endpoints:
+  users-service: "users-service:8080"
+  api-gateway: "gateway-service:8080"

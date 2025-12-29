@@ -36,3 +36,6 @@ data:
           contact:
             name: Support Team
             email: support@example.com
+    endpoints:
+      users-service: http://{{ .Release.Name }}-users-service:8080
+      api-gateway: http://{{ .Release.Name }}-gateway-service:8080

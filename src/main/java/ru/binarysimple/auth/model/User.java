@@ -35,7 +35,8 @@ public class User {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"))
     @Column(name = "role")
-    private Set<String> roles;
+    @Enumerated(EnumType.STRING)
+    private Set<Roles> roles;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
