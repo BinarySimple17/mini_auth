@@ -24,6 +24,13 @@ public class JwtTokenProvider {
 
     public JwtTokenProvider(@Value("${jwt.secret}") String secret,
                             @Value("${jwt.expiration}") int jwtExpiration) {
+
+        String trimmedSecret = secret.trim();
+        logger.info("JWT Secret (first 10 chars): {}...", trimmedSecret.substring(0, Math.min(10, trimmedSecret.length())));
+
+        byte[] decodedKey = Decoders.BASE64.decode(trimmedSecret);
+        logger.info("Decoded JWT secret length: {} bytes", decodedKey.length); // Должно быть 32
+
         // Создаем безопасный ключ
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
         this.jwtExpiration = jwtExpiration;
