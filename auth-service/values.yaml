@@ -178,7 +178,9 @@ postgresql:
 
 endpoints:
   usersServiceHost: "users-service"
+  usersServiceSpace: "default"
   usersServicePort: "80"
   # api-gateway: "gateway-service:8080"
   apiGatewayHost: "users-service"
+  apiGatewaySpace: "default"
   apiGatewayPort: "80"

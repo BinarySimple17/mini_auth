@@ -4,6 +4,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 import ru.binarysimple.auth.dto.CreateUserExternalDto;
 import ru.binarysimple.auth.model.User;
@@ -25,13 +27,24 @@ public class UsersServiceClient {
     }
 
     public CreateUserExternalDto createUser(CreateUserExternalDto user) {
-        
+
         logger.debug("UsersServiceClient createUser: {}", user);
 
+        try {
         return restClient.post()
                 .uri("/user")
                 .body(user)
                 .retrieve()
                 .body(CreateUserExternalDto.class);
+        } catch (HttpClientErrorException e) {
+            logger.warn("Client error ({}): {}", e.getStatusCode(), e.getResponseBodyAsString(), e);
+            throw e; // rethrow
+        } catch (ResourceAccessException e) {
+            logger.error("Network error while connecting to users service: {}", e.getMessage(), e);
+            throw e; // Could be unreachable host, timeout, etc.
+        } catch (Exception e) {
+            logger.error("Unexpected error during user creation call", e);
+            throw e;
+        }
     }
 }

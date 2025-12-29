@@ -37,6 +37,6 @@ data:
             name: Support Team
             email: support@example.com
     endpoints:
-      users-service: http://{{ .Release.Name }}-{{ .Values.endpoints.usersServiceHost }}:{{ .Values.endpoints.usersServicePort }}
-      api-gateway: http://{{ .Release.Name }}-{{ .Values.endpoints.apiGatewayHost }}:{{ .Values.endpoints.apiGatewayPort }}
+      users-service: http://{{ .Release.Name }}-{{ .Values.endpoints.usersServiceHost }}.{{ .Values.endpoints.usersServiceSpace }}.svc.cluster.local:{{ .Values.endpoints.usersServicePort }}
+      api-gateway: http://{{ .Release.Name }}-{{ .Values.endpoints.apiGatewayHost }}.{{ .Values.endpoints.apiGatewaySpace }}.svc.cluster.local:{{ .Values.endpoints.apiGatewayPort }}
          
