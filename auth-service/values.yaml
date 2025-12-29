@@ -8,7 +8,7 @@ image:
   repository: binarysimple/simple-auth-service
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "0.0.1"
+  tag: "0.0.2"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -177,5 +177,8 @@ postgresql:
   architecture: "standalone"
 
 endpoints:
-  users-service: "users-service:8080"
-  api-gateway: "gateway-service:8080"
+  usersServiceHost: "users-service"
+  usersServicePort: "80"
+  # api-gateway: "gateway-service:8080"
+  apiGatewayHost: "users-service"
+  apiGatewayPort: "80"
