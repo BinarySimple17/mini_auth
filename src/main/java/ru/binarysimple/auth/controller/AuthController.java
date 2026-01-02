@@ -1,15 +1,15 @@
 package ru.binarysimple.auth.controller;
 
-import ru.binarysimple.auth.dto.*;
-import ru.binarysimple.auth.exception.TokenRefreshException;
-import ru.binarysimple.auth.model.User;
-import ru.binarysimple.auth.service.AuthServiceImpl;
-import ru.binarysimple.auth.security.JwtTokenProvider;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.binarysimple.auth.dto.*;
+import ru.binarysimple.auth.exception.TokenRefreshException;
+import ru.binarysimple.auth.model.User;
+import ru.binarysimple.auth.security.JwtTokenProvider;
+import ru.binarysimple.auth.service.AuthServiceImpl;
 import ru.binarysimple.auth.service.RefreshTokenService;
 
 @RestController
@@ -21,11 +21,25 @@ public class AuthController {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
 
+    /**
+     *todo методы отозвать все рефреши по имени, блокировать аккаунт enabled = false
+     */
+
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@Valid @RequestBody LoginRequest loginRequest) {
         try {
             AuthResponse response = authService.login(loginRequest);
             return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<AuthResponse> logout(@RequestParam String refreshToken) {
+        try {
+            authService.logout(refreshToken);
+            return ResponseEntity.ok(null);
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }

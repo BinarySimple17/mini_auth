@@ -84,8 +84,14 @@ public class AuthServiceImpl implements AuthService {
         }
 
         // Автоматический логин после регистрации
-        LoginRequest loginRequest = new LoginRequest(request.getUsername(), request.getPassword());
-        return login(loginRequest);
+        if (request.getLogin()) {
+            LoginRequest loginRequest = new LoginRequest(request.getUsername(), request.getPassword());
+            return login(loginRequest);
+        }
+
+        AuthResponse response = new AuthResponse();
+        response.setUserInfo(mapToUserInfo(user));
+        return response;
     }
 
     public Boolean validateToken(String token) {
@@ -111,5 +117,10 @@ public class AuthServiceImpl implements AuthService {
         userInfo.setUsername(user.getUsername());
         userInfo.setRoles(user.getRoles());
         return userInfo;
+    }
+
+    @Override
+    public void logout(String token) {
+        refreshTokenService.revokeToken(token);
     }
 }
