@@ -35,4 +35,6 @@ public interface AuthService {
 
     public UserInfo getUserInfo(String token);
 
+    void logout(String token);
+
 }

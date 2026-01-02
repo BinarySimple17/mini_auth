@@ -1,9 +1,8 @@
 package ru.binarysimple.auth.service;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,7 +55,21 @@ public class RefreshTokenServiceImpl implements RefreshTokenService {
                 .orElseThrow(() -> new TokenRefreshException(token, "Refresh token not found."));
     }
 
-    public void revokeAllUserTokens(User user) {
+    public void deleteAllUserTokens(User user) {
         refreshTokenRepository.deleteByUser_Id(user.getId());
+    }
+
+    @Override
+    public void revokeAllUserTokens(User user) {
+
+    }
+
+    @Override
+    public void revokeToken(String token) {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token).orElse(null);
+        if (refreshToken != null) {
+            refreshToken.setRevoked(true);
+            refreshTokenRepository.save(refreshToken);
+        }
     }
 }
