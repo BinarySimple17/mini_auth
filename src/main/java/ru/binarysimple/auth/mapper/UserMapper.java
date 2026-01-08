@@ -15,6 +15,8 @@ public interface UserMapper {
 
     User toEntity(UserDtoAll userDtoAll);
 
+    User toEntity(CreateUserExternalDto userDtoExternal);
+
     UserDtoAll toUserDtoAll(User user);
 
     User updateWithNull(UserDtoAll userDtoAll, @MappingTarget User user);
