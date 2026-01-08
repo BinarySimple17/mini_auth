@@ -19,7 +19,6 @@ public class UsersServiceClient {
     private static final Logger logger = LoggerFactory.getLogger(UsersServiceClient.class);
 
     public UsersServiceClient(@Value("${endpoints.api-gateway:http://test-name:8081}") String baseUrl) {
-//    public UsersServiceClient() {
         logger.info("UsersServiceClient baseUrl: {}", baseUrl);
         this.restClient = RestClient.builder()
                 .baseUrl(baseUrl)
@@ -32,7 +31,7 @@ public class UsersServiceClient {
 
         try {
         return restClient.post()
-                .uri("/user")
+                .uri("/api/v1/user")
                 .body(user)
                 .retrieve()
                 .body(CreateUserExternalDto.class);
