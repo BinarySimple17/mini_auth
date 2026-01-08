@@ -9,29 +9,27 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 import ru.binarysimple.auth.dto.CreateUserExternalDto;
-import ru.binarysimple.auth.mapper.UserMapper;
 import ru.binarysimple.auth.model.User;
+import ru.binarysimple.auth.repository.UserRepository;
 import ru.binarysimple.auth.security.JwtTokenProvider;
-import ru.binarysimple.auth.service.AuthServiceImpl;
 
 @Component
 public class UsersServiceClient {
-    
-    private final JwtTokenProvider jwtTokenProvider;
-    private final UserMapper mapper;
-
-    private final RestClient restClient;
 
     private static final Logger logger = LoggerFactory.getLogger(UsersServiceClient.class);
+    private final JwtTokenProvider jwtTokenProvider;
+    private final UserRepository userRepository;
+    private final RestClient restClient;
 
     @Autowired
     public UsersServiceClient(@Value("${endpoints.api-gateway:http://test-name:8081}") String baseUrl,
-                              JwtTokenProvider jwtTokenProvider, UserMapper mapper) {
+                              JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
         logger.info("UsersServiceClient baseUrl: {}", baseUrl);
         this.jwtTokenProvider = jwtTokenProvider;
-        this.mapper = mapper;
+        this.userRepository = userRepository;
         this.restClient = RestClient.builder()
-                .baseUrl(baseUrl)
+                .baseUrl("http://localhost:8200")
+//                .baseUrl(baseUrl)
                 .build();
     }
 
@@ -39,16 +37,16 @@ public class UsersServiceClient {
 
         logger.debug("UsersServiceClient createUser: {}", user);
 
-        User userModel = mapper.toEntity(user);
+        User userModel = userRepository.findByUsername(user.getUsername()).orElseThrow( () -> new RuntimeException("Newly created User not found"));
         String token = jwtTokenProvider.generateToken(userModel);
 
         try {
-        return restClient.post()
-                .uri("/api/v1/user")
-                .header("Authorization", "Bearer " + token)
-                .body(user)
-                .retrieve()
-                .body(CreateUserExternalDto.class);
+            return restClient.post()
+                    .uri("/api/v1/user")
+                    .header("Authorization", "Bearer " + token)
+                    .body(user)
+                    .retrieve()
+                    .body(CreateUserExternalDto.class);
         } catch (HttpClientErrorException e) {
             logger.warn("Client error ({}): {}", e.getStatusCode(), e.getResponseBodyAsString(), e);
             throw e; // rethrow
