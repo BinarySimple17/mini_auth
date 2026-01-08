@@ -28,8 +28,8 @@ public class UsersServiceClient {
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
         this.restClient = RestClient.builder()
-                .baseUrl("http://localhost:8200")
-//                .baseUrl(baseUrl)
+//                .baseUrl("http://localhost:8200")
+                .baseUrl(baseUrl)
                 .build();
     }
 
