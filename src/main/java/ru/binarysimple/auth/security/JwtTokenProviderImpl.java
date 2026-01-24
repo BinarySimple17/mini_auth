@@ -32,7 +32,7 @@ public class JwtTokenProviderImpl implements JwtTokenProvider {
 
         byte[] decodedKey = Decoders.BASE64.decode(trimmedSecret);
         logger.info("Decoded JWT secret length: {} bytes", decodedKey.length); // Должно быть 32
-        logger.info(Arrays.toString(decodedKey));
+//        logger.info(Arrays.toString(decodedKey));
 
         // Создаем безопасный ключ
         this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));

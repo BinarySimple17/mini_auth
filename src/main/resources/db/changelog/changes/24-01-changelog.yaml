@@ -1,5 +1,13 @@
 databaseChangeLog:
   - changeSet:
+      id: 1766582886405-0
+      author: system
+      runInTransaction: false
+      changes:
+        - sql:
+            sql: CREATE SCHEMA IF NOT EXISTS auth_db;
+            endDelimiter: "\n"
+  - changeSet:
       id: 1766582886405-1
       author: Professional (generated)
       objectQuotingStrategy: QUOTE_ONLY_RESERVED_WORDS
