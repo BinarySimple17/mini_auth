@@ -8,7 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import ru.binarysimple.auth.client.UsersServiceClient;
+import ru.binarysimple.auth.client.GateWayServiceClient;
 import ru.binarysimple.auth.dto.*;
 import ru.binarysimple.auth.mapper.UserMapper;
 import ru.binarysimple.auth.model.RefreshToken;
@@ -31,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenService refreshTokenService;
-    private final UsersServiceClient usersServiceClient;
+    private final GateWayServiceClient gateWayServiceClient;
     private final UserMapper mapper;
 
     public AuthResponse login(LoginRequest request) {
@@ -76,7 +76,7 @@ public class AuthServiceImpl implements AuthService {
         CreateUserExternalDto userExternalDto = mapper.toCreateUserExternalDto(request);
 
         try {
-            usersServiceClient.createUser(userExternalDto);
+            gateWayServiceClient.createUser(userExternalDto);
         } catch (Exception e) {
             logger.error("Error creating user in external service: {}", e.getMessage());
             userRepository.delete(user);

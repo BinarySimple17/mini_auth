@@ -14,17 +14,17 @@ import ru.binarysimple.auth.repository.UserRepository;
 import ru.binarysimple.auth.security.JwtTokenProvider;
 
 @Component
-public class UsersServiceClient {
+public class GateWayServiceClient {
 
-    private static final Logger logger = LoggerFactory.getLogger(UsersServiceClient.class);
+    private static final Logger logger = LoggerFactory.getLogger(GateWayServiceClient.class);
     private final JwtTokenProvider jwtTokenProvider;
     private final UserRepository userRepository;
     private final RestClient restClient;
 
     @Autowired
-    public UsersServiceClient(@Value("${endpoints.api-gateway:http://test-name:8081}") String baseUrl,
-                              JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
-        logger.info("UsersServiceClient baseUrl: {}", baseUrl);
+    public GateWayServiceClient(@Value("${endpoints.api-gateway:http://test-name:8081}") String baseUrl,
+                                JwtTokenProvider jwtTokenProvider, UserRepository userRepository) {
+        logger.info("GatewayServiceClient baseUrl: {}", baseUrl);
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
         this.restClient = RestClient.builder()
@@ -35,7 +35,7 @@ public class UsersServiceClient {
 
     public CreateUserExternalDto createUser(CreateUserExternalDto user) {
 
-        logger.debug("UsersServiceClient createUser: {}", user);
+        logger.debug("GatewayServiceClient createUser: {}", user);
 
         User userModel = userRepository.findByUsername(user.getUsername()).orElseThrow( () -> new RuntimeException("Newly created User not found"));
         String token = jwtTokenProvider.generateToken(userModel);
