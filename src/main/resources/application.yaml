@@ -19,6 +19,7 @@ spring:
       ddl-auto: validate
     properties:
       hibernate:
+        default_schema: auth_db
         format_sql: true
         jdbc:
           lob:
